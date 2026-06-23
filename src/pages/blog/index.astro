@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = await getCollection('blog');
+posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Blog" description="Thoughts, tutorials, and writings">
+  <div class="max-w-3xl mx-auto px-6 py-20">
+    <h1 class="text-4xl font-extrabold mb-4">
+      <span class="neon-text-cyan">Blog</span>
+    </h1>
+    <p class="text-white/40 mb-12">Thoughts, tutorials, and random musings.</p>
+
+    <div class="space-y-8">
+      {posts.map(post => (
+        <article class="group p-6 rounded-xl bg-dark-card border border-dark-border
+                         hover:border-neon-cyan/30 transition-all duration-300">
+          <a href={`/blog/${post.slug}`}>
+            <time class="text-xs text-white/30">
+              {post.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+            </time>
+            <h2 class="text-xl font-semibold text-white mt-1 group-hover:text-neon-cyan transition-colors">
+              {post.data.title}
+            </h2>
+            {post.data.excerpt && (
+              <p class="text-sm text-white/40 mt-2">{post.data.excerpt}</p>
+            )}
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
